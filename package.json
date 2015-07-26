@@ -1,0 +1,32 @@
+{
+  "name": "ncbi-eutils",
+  "version": "0.0.1",
+  "description": "NCBI's Entrez e-utilities client for node and the browser",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://linjoey@github.com/linjoey/ncbi-eutils.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/linjoey/ncbi-eutils/issues"
+  },
+  "homepage": "https://github.com/linjoey/ncbi-eutils#readme",
+  "devDependencies": {
+    "browserify": "^11.0.0",
+    "gulp": "^3.9.0",
+    "gulp-concat": "^2.6.0",
+    "gulp-sourcemaps": "^1.5.2",
+    "gulp-uglify": "^1.2.0",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0"
+  },
+  "dependencies": {
+    "es6-promise": "^2.3.0",
+    "request": "^2.60.0"
+  }
+}
