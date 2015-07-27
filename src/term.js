@@ -4,16 +4,22 @@
 var Term = (function() {
   function _attachField (op, value, field) {
     if (op !== undefined) {
-      this.queryText += op + '+';
+      this.queryText += '+' + op + '+';
     }
-    this.queryText += value + '[' + field + ']+';
+
+    this.queryText += value;
+
+    if (field !== undefined) {
+      this.queryText += '[' + field + ']';
+    }
   }
 
   function _termConstructor(value, field) {
     var _this = this;
     _this.queryText = '';
+    _this.termAdded = false;
 
-    if (field !== undefined && value !== undefined) {
+    if (value !== undefined) {
       _attachField.call(_this, undefined, value, field);
     }
 
@@ -26,7 +32,6 @@ var Term = (function() {
 
     Object.defineProperty(_termConstructor.prototype, 'closeParen', {
       get: function() {
-        _this.queryText = _this.queryText.substring(0, _this.queryText.length - 1);
         _this.queryText += ')';
         return _this;
       }
@@ -47,7 +52,7 @@ var Term = (function() {
     _attachField.call(this, 'not', value, field);
     return this;
   };
-  
+
   _termConstructor.prototype.range = function(op, range, field) {
     this.queryText += op + '+' + range[0] + '[' + field + ']:' + range[1] + '[' + field + ']+';
     return this;
