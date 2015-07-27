@@ -6,8 +6,21 @@ var version = require('../package.json').version
 
 eutilsAPI.version = version;
 
+eutilsAPI.buildSearchTerm = function buildSearchTerm(value, field) {
+  return new Term(value, field);
+}
+
 eutilsAPI.search = function(db, term) {
-  return eutilsAPI.esearch(db, term).then(eutilsAPI.esummary);
+  var eopts = {
+    db: db,
+    term: term
+  };
+
+  if (arguments.length == 1 && typeof arguments[0] === 'object') {
+    eopts = arguments[0];
+  }
+  console.log(eopts);
+  return eutilsAPI.esearch(eopts).then(eutilsAPI.esummary);
 };
 
 
