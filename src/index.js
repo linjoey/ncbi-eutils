@@ -11,11 +11,18 @@ var eutils = {
 
 
 function einfo(db) {
-  var requestURL = EUTILS_BASE + 'einfo.fcgi?retmode=json&version=2.0&';
+  var requestURL = EUTILS_BASE + 'einfo.fcgi?retmode=json&';
   if (db !== undefined) {
-    requestURL += 'db=' + db;
+    requestURL += '&version=2.0&db=' + db;
   }
-  return request(requestURL);
+  return request(requestURL).then(function(res) {
+    var json = JSON.parse(res);
+    return json.einforesult;
+  });
+}
+
+function esearch(db, term, options) {
+
 }
 
 module.exports = eutils;
