@@ -4,7 +4,7 @@
 var Term = (function() {
   function _attachField (op, value, field) {
     if (op !== undefined) {
-      this.queryText += '+' + op + '+';
+      this.queryText += ' ' + op + ' ';
     }
 
     this.queryText += value;
@@ -49,16 +49,18 @@ var Term = (function() {
   };
 
   _termConstructor.prototype.not = function(value, field) {
-    _attachField.call(this, 'not', value, field);
+    _attachField.call(this, 'NOT', value, field);
     return this;
   };
 
   _termConstructor.prototype.range = function(op, range, field) {
-    this.queryText += op + '+' + range[0] + '[' + field + ']:' + range[1] + '[' + field + ']+';
+    this.queryText += ' ' + op.toUpperCase() + ' ' + range[0] + '[' + field + ']:' + range[1] + '[' + field + '] ';
     return this;
   };
 
   return _termConstructor;
 })();
 
+//var t = new Term('test term').and('value', 'orgn').not('val', 'blah').range('and',[0, 100], 'field')
+//console.log(t.queryText)
 module.exports = Term;
