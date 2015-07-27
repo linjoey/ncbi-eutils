@@ -1,7 +1,7 @@
 
 var Term = require('./term.js');
 var request = require('./request.js');
-var assign = require('lodash.assign');
+var xml2js = require('xml2js').parseString;
 
 var EUTILS_BASE = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/';
 
@@ -26,16 +26,13 @@ function buildQueryParameters(options, ignoreList) {
 }
 
 var esearch = function (options) {
-
   if (options === undefined || options.db === undefined || options.term === undefined) {
-    throw new Error('esearch required arguments not specified');
+    throw new Error('esearch required arguments are not specified');
   }
 
   var requestURL = EUTILS_BASE + 'esearch.fcgi?retmode=json&usehistory=y';
-
   requestURL += buildQueryParameters(options, ['term', 'usehistory', 'retmode']);
   requestURL += '&term=' + (options.term instanceof Term ? options.term.queryText : options.term);
-  console.log('esearch', requestURL)
 
   return request(requestURL).then(function(res) {
     var jsonRes = JSON.parse(res);
@@ -45,10 +42,8 @@ var esearch = function (options) {
 };
 
 var esummary = function(options) {
-  console.log('esummar', options)
-
   if (options === undefined || options.db === undefined) {
-    throw new Error('esearch required arguments not specified');
+    throw new Error('esummary required arguments are not specified');
   }
 
   var requestURL = EUTILS_BASE + 'esummary.fcgi?retmode=json';
@@ -59,7 +54,6 @@ var esummary = function(options) {
     requestURL += '&webenv=' + options.esearchresult.webenv;
   }
 
-  console.log(requestURL)
   return request(requestURL).then(function(res) {
     var jsonRes = JSON.parse(res);
     jsonRes.db = options.db;
@@ -67,10 +61,44 @@ var esummary = function(options) {
   });
 };
 
+//TODO enhance to support rettype and retmode
+//http://www.ncbi.nlm.nih.gov/books/NBK25499/table/chapter4.T._valid_values_of__retmode_and/?report=objectonly
+var efetch = function(options) {
+  if (options === undefined || options.db === undefined) {
+    throw new Error('esearch required arguments are not specified');
+  }
+
+  var requestURL = EUTILS_BASE + 'efetch.fcgi?retmode=xml';
+  requestURL += buildQueryParameters(options, ['retmode', 'esearchresult', 'header']);
+
+  if (options.esearchresult !== undefined) {
+    requestURL += '&query_key=' + options.esearchresult.querykey;
+    requestURL += '&webenv=' + options.esearchresult.webenv;
+  }
+
+  return request(requestURL).then(function(res) {
+    return new Promise(function(resolve, reject) {
+      xml2js(res, function(err, result) {
+        if (!err) {
+          resolve(result);
+        } else {
+          reject(err);
+        }
+      });
+    });
+  });
+};
+
+var elink = function(options) {
+
+};
+
 
 module.exports = {
   version: '0.0.1',
   einfo: einfo,
   esearch: esearch,
-  esummary: esummary
+  esummary: esummary,
+  efetch: efetch,
+  elink: elink
 };
