@@ -7,6 +7,21 @@
 </head>
 <body>
 
+<p id="msg"></p>
+
 <script src="ncbi-eutils.js"></script>
+<script>
+  var eutils = require('ncbi-eutils');
+  console.log(eutils.version);
+
+  function displayMe(m) {
+    document.getElementById('msg').innerHTML = m;
+  }
+
+
+  eutils.einfo('protein').then(function(d){
+    console.log(d);
+  })
+</script>
 </body>
 </html>
