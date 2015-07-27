@@ -20,7 +20,7 @@ var b = browserify({
 
 b.require(ENTRY_FILE, {expose: PROJECT_NAME});
 
-gulp.task('default', ['build', 'release']);
+gulp.task('default', ['build-browser-dev', 'build-browser-release']);
 
 gulp.task('build-browser-dev', function() {
   return b.bundle()
