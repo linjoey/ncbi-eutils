@@ -1,5 +1,6 @@
 
 var request = require('./request.js')
+  , Term = require('./term.js')
   , xml2js = require('xml2js').parseString
   , EUTILS_BASE = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/';
 
@@ -13,16 +14,6 @@ function buildQueryParameters(options, ignoreList) {
   return query;
 }
 
-exports.einfo = function einfo(db) {
-  var requestURL = EUTILS_BASE + 'einfo.fcgi?retmode=json&';
-  if (db !== undefined) {
-    requestURL += 'version=2.0&db=' + db;
-  }
-  return request(requestURL).then(function(res) {
-    return JSON.parse(res);
-  });
-};
-
 function ensureOptionIsSet(options, names, tag) {
   var msg = 'Invalid arguments supplied to ' + tag;
   if (options === undefined) {
@@ -35,6 +26,16 @@ function ensureOptionIsSet(options, names, tag) {
     }
   }
 }
+
+exports.einfo = function einfo(db) {
+  var requestURL = EUTILS_BASE + 'einfo.fcgi?retmode=json&';
+  if (db !== undefined) {
+    requestURL += 'version=2.0&db=' + db;
+  }
+  return request(requestURL).then(function(res) {
+    return JSON.parse(res);
+  });
+};
 
 exports.esearch = function esearch(options) {
 
