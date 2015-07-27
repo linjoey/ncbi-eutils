@@ -36,7 +36,7 @@ var Term = (function() {
         return _this;
       }
     });
-  };
+  }
 
   _termConstructor.prototype.and = function(value, field) {
     _attachField.call(this, 'AND', value, field);
@@ -61,6 +61,4 @@ var Term = (function() {
   return _termConstructor;
 })();
 
-//var t = new Term('test term').and('value', 'orgn').not('val', 'blah').range('and',[0, 100], 'field')
-//console.log(t.queryText)
 module.exports = Term;
