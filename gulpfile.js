@@ -22,8 +22,7 @@ b.require(ENTRY_FILE, {expose: PROJECT_NAME});
 
 gulp.task('default', ['build', 'release']);
 
-
-gulp.task('build', function() {
+gulp.task('build-browser-dev', function() {
   return b.bundle()
     .pipe(source(BUILD_FILE))
     .pipe(buffer())
@@ -32,7 +31,7 @@ gulp.task('build', function() {
     .pipe(gulp.dest(DIST_FOLDER));
 });
 
-gulp.task('release', function() {
+gulp.task('build-browser-release', function() {
   return b.bundle()
     .pipe(source(DIST_FILE))
     .pipe(buffer())
