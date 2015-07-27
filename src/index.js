@@ -1,31 +1,21 @@
 
-var http = require('http');
-var url = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=gene&term=1[chr]+AND+1[CHRPOS]:5000000[CHRPOS]+AND+human[ORGN]&retmode=json'
+var Term = require('./term.js');
+var request = require('./request.js');
 
-function requestJSON(url) {
-  return new Promise(function(resolve, reject) {
-    var body = '';
-    http.get(url, function(res) {
-      if (res.statusCode === 200) {
-        res.on('data', function(chunk) {
-          body += chunk;
-        });
-        res.on('end', function() {
-          resolve(JSON.parse(body));
-          console.log(body)
-        })
-      } else {
-        reject(res.statusMessage);
-      }
-      res.on('error', function(e) {
-        reject(e.message);
-      });
-    })
-  });
+var EUTILS_BASE = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/';
+
+var eutils = {
+  version: '0.0.1',
+  einfo: einfo
+};
+
+
+function einfo(db) {
+  var requestURL = EUTILS_BASE + 'einfo.fcgi?retmode=json&version=2.0&';
+  if (db !== undefined) {
+    requestURL += 'db=' + db;
+  }
+  return request(requestURL);
 }
 
-requestJSON(url).then(function(d){
-  console.log(d);
-}).catch(function(d){
-  console.log('error', d);
-})
+module.exports = eutils;
