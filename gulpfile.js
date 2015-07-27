@@ -7,7 +7,7 @@ var gulp        = require('gulp')
   , sourcemaps  = require('gulp-sourcemaps');
 
 var PROJECT_NAME  = 'ncbi-eutils'
-  , ENTRY_FILE    = './index.js'
+  , ENTRY_FILE    = './src/index.js'
   , BUILD_FILE    =  PROJECT_NAME + '.js'
   , DIST_FILE     =  PROJECT_NAME + '.min.js'
   , DIST_FOLDER   = './'
