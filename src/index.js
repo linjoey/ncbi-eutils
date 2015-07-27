@@ -2,18 +2,9 @@
 var Term = require('./term.js');
 var request = require('./request.js');
 var xml2js = require('xml2js').parseString;
+var version = require('../package.json').version;
 
 var EUTILS_BASE = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/';
-
-function einfo(db) {
-  var requestURL = EUTILS_BASE + 'einfo.fcgi?retmode=json&';
-  if (db !== undefined) {
-    requestURL += 'version=2.0&db=' + db;
-  }
-  return request(requestURL).then(function(res) {
-    return JSON.parse(res);
-  });
-}
 
 function buildQueryParameters(options, ignoreList) {
   var query = '';
@@ -25,10 +16,32 @@ function buildQueryParameters(options, ignoreList) {
   return query;
 }
 
-var esearch = function (options) {
-  if (options === undefined || options.db === undefined || options.term === undefined) {
-    throw new Error('esearch required arguments are not specified');
+function einfo(db) {
+  var requestURL = EUTILS_BASE + 'einfo.fcgi?retmode=json&';
+  if (db !== undefined) {
+    requestURL += 'version=2.0&db=' + db;
   }
+  return request(requestURL).then(function(res) {
+    return JSON.parse(res);
+  });
+}
+
+function ensureOptionIsSet(options, names, tag) {
+  var msg = 'Invalid arguments supplied to ' + tag;
+  if (options === undefined) {
+    throw new Error(msg);
+  }
+
+  for (var i = 0; i < names.length; ++i) {
+    if (options[names[i]] === undefined) {
+      throw new Error(msg);
+    }
+  }
+}
+
+var esearch = function (options) {
+
+  ensureOptionIsSet(options, ['db', 'term'], 'esearch');
 
   var requestURL = EUTILS_BASE + 'esearch.fcgi?retmode=json&usehistory=y';
   requestURL += buildQueryParameters(options, ['term', 'usehistory', 'retmode']);
@@ -42,9 +55,8 @@ var esearch = function (options) {
 };
 
 var esummary = function(options) {
-  if (options === undefined || options.db === undefined) {
-    throw new Error('esummary required arguments are not specified');
-  }
+
+  ensureOptionIsSet(options, ['db'], 'esummary');
 
   var requestURL = EUTILS_BASE + 'esummary.fcgi?retmode=json';
   requestURL += buildQueryParameters(options, ['retmode', 'esearchresult', 'header']);
@@ -62,11 +74,11 @@ var esummary = function(options) {
 };
 
 //TODO enhance to support rettype and retmode
+//TODO support piping from elink
 //http://www.ncbi.nlm.nih.gov/books/NBK25499/table/chapter4.T._valid_values_of__retmode_and/?report=objectonly
 var efetch = function(options) {
-  if (options === undefined || options.db === undefined) {
-    throw new Error('esearch required arguments are not specified');
-  }
+
+  ensureOptionIsSet(options, ['db'], 'efetch');
 
   var requestURL = EUTILS_BASE + 'efetch.fcgi?retmode=xml';
   requestURL += buildQueryParameters(options, ['retmode', 'esearchresult', 'header']);
@@ -95,7 +107,7 @@ var elink = function(options) {
 
 
 module.exports = {
-  version: '0.0.1',
+  version: version,
   einfo: einfo,
   esearch: esearch,
   esummary: esummary,
