@@ -74,7 +74,6 @@ var esummary = function(options) {
 };
 
 //TODO enhance to support rettype and retmode
-//TODO support piping from elink
 //http://www.ncbi.nlm.nih.gov/books/NBK25499/table/chapter4.T._valid_values_of__retmode_and/?report=objectonly
 var efetch = function(options) {
 
@@ -102,7 +101,22 @@ var efetch = function(options) {
 };
 
 var elink = function(options) {
+  ensureOptionIsSet(options, ['dbfrom','db'], 'esummary');
 
+  var requestURL = EUTILS_BASE + 'elink.fcgi?retmode=json';
+  requestURL += buildQueryParameters(options, ['retmode', 'esearchresult', 'header']);
+
+  if (options.esearchresult !== undefined) {
+    requestURL += '&query_key=' + options.esearchresult.querykey;
+    requestURL += '&webenv=' + options.esearchresult.webenv;
+  }
+
+  return request(requestURL).then(function(res) {
+    var jsonRes = JSON.parse(res);
+    jsonRes.db = options.db;
+    jsonRes.id = jsonRes.linksets[0].linksetdbs[0].links;
+    return jsonRes;
+  });
 };
 
 
