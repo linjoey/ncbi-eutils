@@ -4,7 +4,7 @@
 This package is a convenience wrapper for **NCBI's E-utilities API** documented at http://www.ncbi.nlm.nih.gov/books/NBK25500/. It uses  es6 promises to support the "pipe" like feature among eutils, e.g. connecting `esearch, elink, or esummary` together. 
 
 ### Usage
-Access a single e-util:
+Access a single eutil:
 ```javascript
   var eutils = require('ncbi-eutils');
   eutils.esearch({db:'gene', term: 'ltf[sym] AND human[orgn]'})
@@ -18,7 +18,7 @@ Basic pipelines: `esearch` -> `esummay`
     .then(function(d){console.log(d)})
 ```
 
-linking pipelines: `esearch` -> `elink` -> `efetch` 
+Linking pipelines: `elink` -> `efetch` 
 ```javascript
   eutils.elink({dbfrom: 'protein', db:'gene', id : ['15718680','157427902']})
     .then(eutils.fetch)
@@ -42,8 +42,11 @@ or
 - [ ] Fix up efetch to support more user options
 - [ ] test complex pipelines e.g. esearch | elink | efetch
 - [ ] implement other eutils: espell, egquery, ecitmatch?
+- [x] implement convenience calls for esearch -> esummary
 - [ ] write test test test
 
+### License
+MIT
 
 ### NCBI Copyright & Disclaimers
 Please visit http://www.ncbi.nlm.nih.gov/About/disclaimer.html for NCBI's copyright notice.
