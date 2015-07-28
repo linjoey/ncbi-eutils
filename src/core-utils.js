@@ -38,7 +38,6 @@ exports.einfo = function einfo(db) {
 };
 
 exports.esearch = function esearch(options) {
-
   ensureOptionIsSet(options, ['db', 'term'], 'esearch');
 
   var requestURL = EUTILS_BASE + 'esearch.fcgi?retmode=json&usehistory=y';
@@ -71,19 +70,23 @@ exports.esummary = function summary(options) {
   });
 };
 
+function getWebenvKeysForURL(options) {
+  var url = '';
+  if (options.esearchresult !== undefined) {
+    url += '&query_key=' + options.esearchresult.querykey;
+    url += '&webenv=' + options.esearchresult.webenv;
+  }
+  return url;
+}
+
 //TODO enhance to support rettype and retmode
 //http://www.ncbi.nlm.nih.gov/books/NBK25499/table/chapter4.T._valid_values_of__retmode_and/?report=objectonly
 exports.efetch = function efetch(options) {
-
   ensureOptionIsSet(options, ['db'], 'efetch');
 
   var requestURL = EUTILS_BASE + 'efetch.fcgi?retmode=xml';
   requestURL += buildQueryParameters(options, ['retmode', 'esearchresult', 'header']);
-
-  if (options.esearchresult !== undefined) {
-    requestURL += '&query_key=' + options.esearchresult.querykey;
-    requestURL += '&webenv=' + options.esearchresult.webenv;
-  }
+  requestURL += getWebenvKeysForURL(options);
 
   return request(requestURL).then(function(res) {
     return new Promise(function(resolve, reject) {
@@ -103,11 +106,7 @@ exports.elink = function elink(options) {
 
   var requestURL = EUTILS_BASE + 'elink.fcgi?retmode=json';
   requestURL += buildQueryParameters(options, ['retmode', 'esearchresult', 'header']);
-
-  if (options.esearchresult !== undefined) {
-    requestURL += '&query_key=' + options.esearchresult.querykey;
-    requestURL += '&webenv=' + options.esearchresult.webenv;
-  }
+  requestURL += getWebenvKeysForURL(options);
 
   return request(requestURL).then(function(res) {
     var jsonRes = JSON.parse(res);
