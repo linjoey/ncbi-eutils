@@ -52,7 +52,6 @@ exports.esearch = function esearch(options) {
 };
 
 exports.esummary = function summary(options) {
-
   ensureOptionIsSet(options, ['db'], 'esummary');
 
   var requestURL = EUTILS_BASE + 'esummary.fcgi?retmode=json';
@@ -102,7 +101,14 @@ exports.efetch = function efetch(options) {
 };
 
 exports.elink = function elink(options) {
-  ensureOptionIsSet(options, ['dbfrom','db'], 'esummary');
+
+  if (options.header.type === 'esearch' || options.header.type === 'elink') {
+    options.dbfrom = options.db;
+  }
+
+  options.db = options.dbto;
+
+  ensureOptionIsSet(options, ['dbfrom','dbto'], 'elink');
 
   var requestURL = EUTILS_BASE + 'elink.fcgi?retmode=json';
   requestURL += buildQueryParameters(options, ['retmode', 'esearchresult', 'header']);
