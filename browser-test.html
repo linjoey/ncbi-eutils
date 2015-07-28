@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <title></title>
+
+</head>
+<body>
+
+<pre id="msg"></pre>
+
+<script src="ncbi-eutils.js"></script>
+<script>
+  var eutils = require('ncbi-eutils');
+  console.log(eutils.version);
+
+
+//  eutils.einfo('gene')
+//    .then(function(d){console.log(d)})
+//    .catch(function(e) {console.log('error', e)});
+
+  eutils.esearch({db:'gene', term: 'ltf[sym] AND human[orgn]'})
+    .then(function(d){console.log(d)})
+    .catch(function (e) {console.log('error', e)});
+
+  eutils.esearch({db:'gene', term: 'ltf[sym] AND human[orgn]'})
+    .then(eutils.efetch)
+    .then(function(d){console.log(d)})
+    .catch(function (e) {console.log('error', e)});
+
+//  eutils.esummary({db:'gene', id:['4057', '280846']}).then(function(d) {
+//    console.log(d)
+//  });
+
+//    eutils.efetch({db:'pubmed', id:['17284678','9997'], retmode:'xml'}).then(function(d) {
+//      console.log(d)
+//    });
+
+//  eutils.elink({dbfrom: 'protein', db:'gene', id : ['15718680','157427902']})
+//    .then(eutils.esummary)
+//    .then(function(d) {console.log(d)});
+
+//  eutils.search({db: 'gene', term:'ltf AND human[orgn]'}).then(function(d) {
+//    console.log(d);
+//  });
+
+//  var t = eutils.buildSearchTerm('1', 'chr')
+//    .range('AND', [1,100000], 'CPOS')
+//    .and('human', 'ORGN')
+//
+//  eutils.search('gene', t).then(function(d){console.log(d)});
+
+
+
+</script>
+</body>
+</html>
