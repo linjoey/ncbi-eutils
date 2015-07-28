@@ -2,7 +2,7 @@
   "name": "ncbi-eutils",
   "version": "0.1.2",
   "description": "NCBI's Entrez e-utilities client for node and the browser",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "test": "mocha"
   },
