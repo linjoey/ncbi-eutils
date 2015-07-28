@@ -19,14 +19,14 @@
 //    .then(function(d){console.log(d)})
 //    .catch(function(e) {console.log('error', e)});
 
-  eutils.esearch({db:'gene', term: 'ltf[sym] AND human[orgn]'})
-    .then(function(d){console.log(d)})
-    .catch(function (e) {console.log('error', e)});
+//  eutils.esearch({db:'gene', term: 'ltf[sym] AND human[orgn]'})
+//    .then(function(d){console.log(d)})
+//    .catch(function (e) {console.log('error', e)});
 
-  eutils.esearch({db:'gene', term: 'ltf[sym] AND human[orgn]'})
-    .then(eutils.efetch)
-    .then(function(d){console.log(d)})
-    .catch(function (e) {console.log('error', e)});
+//  eutils.esearch({db:'gene', term: 'ltf[sym] AND human[orgn]'})
+//    .then(eutils.efetch)
+//    .then(function(d){console.log(d)})
+//    .catch(function (e) {console.log('error', e)});
 
 //  eutils.esummary({db:'gene', id:['4057', '280846']}).then(function(d) {
 //    console.log(d)
@@ -36,9 +36,9 @@
 //      console.log(d)
 //    });
 
-//  eutils.elink({dbfrom: 'protein', db:'gene', id : ['15718680','157427902']})
-//    .then(eutils.esummary)
-//    .then(function(d) {console.log(d)});
+  eutils.elink({dbfrom: 'protein', db:'gene', id : ['15718680','157427902']})
+    .then(eutils.esummary)
+    .then(function(d) {console.log(d)});
 
 //  eutils.search({db: 'gene', term:'ltf AND human[orgn]'}).then(function(d) {
 //    console.log(d);
