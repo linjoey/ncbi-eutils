@@ -44,6 +44,7 @@ or
 - [ ] implement other eutils: espell, egquery, ecitmatch?
 - [x] implement convenience calls for esearch -> esummary
 - [ ] write test test test
+- [ ] elink-> results dont have auto history server, relinking to other eutils use manual id passing. Implement epost to support large tasks
 
 ### License
 MIT
