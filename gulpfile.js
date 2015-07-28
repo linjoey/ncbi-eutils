@@ -4,13 +4,15 @@ var gulp        = require('gulp')
   , buffer      = require('vinyl-buffer')
   , uglify      = require('gulp-uglify')
   , concat      = require('gulp-concat')
-  , sourcemaps  = require('gulp-sourcemaps');
+  , sourcemaps  = require('gulp-sourcemaps')
+  , mocha       = require('gulp-mocha');
 
 var PROJECT_NAME  = 'ncbi-eutils'
   , ENTRY_FILE    = './src/index.js'
   , BUILD_FILE    =  PROJECT_NAME + '.js'
   , DIST_FILE     =  PROJECT_NAME + '.min.js'
   , DIST_FOLDER   = './'
+  , TEST_FILE     = './test/test.js';
 
 
 var b = browserify({
@@ -37,4 +39,9 @@ gulp.task('build-browser-release', function() {
     .pipe(buffer())
     .pipe(uglify())
     .pipe(gulp.dest(DIST_FOLDER));
+});
+
+gulp.task('test', function() {
+  return gulp.src(TEST_FILE, {read:false})
+    .pipe(mocha({reporter: 'list'}));
 });
