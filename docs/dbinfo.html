@@ -7,30 +7,90 @@
   <title>NCBI einfo</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+
+  <style>
+    .top-buffer { margin-top: 30px; }
+  </style>
 </head>
 <body>
 
 <div class="container">
   <div class="row">
     <div class="col-md-12">
-      <h1>NCBI Entrez Utilities <small>#einfo</small></h1>
+      <h1>NCBI E-utilities <small id="einfo-title">Loading...</small></h1>
       <p class="lead">This page pulls the latest metadata of all NCBI databases using <strong>einfo</strong>.
-        The following tables show all the available search fields supported in each database.
-        In addition, the supported database links used for <strong>elink</strong> is displayed.</p>
+        These information may be useful for eutils such as <strong>esearch</strong> or <strong>elink</strong> to
+        determine all the supported search fields or database links.
+      </p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div id='db-select' class="dropdown">
+        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+          Select a database <span class="badge" id="total-db"></span>
+          <span class="caret"></span>
+        </button>
+        <ul id= 'db-select-list' class="dropdown-menu">
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="row top-buffer">
+    <div class="col-md-2">
+      <h3>dbinfo</h3>
+    </div>
+    <div class="col-md-10">
+      <div>
+        <dl>
+          <dt>Description:</dt>
+          <dd>Gene Database</dd>
+
+          <dt>Last update:</dt>
+          <dd>"2015/07/28 07:07"</dd>
+
+          <dt>dbbuild</dt>
+          <dd>Build150727-2335m.1</dd>
+        </dl>
+      </div>
     </div>
   </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 <script src="../ncbi-eutils.js"></script>
 <script>
+$(function(){
   var eutils = require('ncbi-eutils');
+  var dbSelect = $('#db-select').hide();
+
+  window.fetchdb = function (db) {
+    console.log('f', db);
+  };
 
   eutils.einfo().then(function(data) {
+    dbSelect.show();
+    $('#einfo-title').html('#einfo version ' + data.header.version);
+
+    var dblist = data.einforesult.dblist;
+    $('#total-db').html(dblist.length);
+
+    dblist = dblist.sort();
+    var dbselList = $('#db-select-list');
+
+    for (var i = 0; i < dblist.length; ++i) {
+      dbselList.append('<li><a href="#" onclick="fetchdb(this.childNodes[0].nodeValue)">' + dblist[i] +'</a></li>')
+    }
+
+  });
+
+  eutils.einfo('gene').then(function(data) {
     console.log(data);
   });
+});
 </script>
 </body>
 </html>
