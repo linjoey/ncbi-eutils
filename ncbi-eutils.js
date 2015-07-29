@@ -13365,7 +13365,7 @@ module.exports = property;
 },{"../internal/baseProperty":82,"../internal/basePropertyDeep":83,"../internal/isKey":99}],121:[function(require,module,exports){
 module.exports={
   "name": "ncbi-eutils",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "description": "NCBI E-utilities API for JavaScript (Node + Browser)",
   "main": "src/index.js",
   "scripts": {
