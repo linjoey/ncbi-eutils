@@ -52,7 +52,7 @@ or in a browser
 All calls in this package return a promise object. To get the return values, pass a function to .then() or .catch to get the results and errors, respectively. Alternatively, pass another eutil function to .then() to create a data pipeline. For detailed descriptions of each E-utility, please visit NCBI's documentations.
 
 ### eutils.einfo([db])
-If **db** is specified, return all metadata for that database. Otherwise, return the list of all available NCBI databases.
+If **db** is specified, return all metadata for that database. Otherwise, return the list of all available NCBI databases. To see a live example of this, go to: http://linjoey.github.io/ncbi-eutils/docs/dbinfo.html.
 
 ### eutils.esearch(options)
 > Provides a list of UIDs matching a text query
