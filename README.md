@@ -2,6 +2,9 @@
 
 This package is a JavaScript wrapper for **NCBI's E-utilities API** documented at http://www.ncbi.nlm.nih.gov/books/NBK25500/. It uses  ES6 promises to support "piping" to combine successive E-utility calls, e.g. piping `esearch` results to `elink`, then piping its result to `esummary`. This can be used in node (CommonJS) or the browser.
 
+[![npm version](https://badge.fury.io/js/ncbi-eutils.svg)](http://badge.fury.io/js/ncbi-eutils)
+[![npm version](https://img.shields.io/badge/license-MIT-blue.svg)]()
+
 ### Usage
 Access a single eutil:
 ```javascript
