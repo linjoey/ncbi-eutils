@@ -1,7 +1,6 @@
 # ncbi-eutils
-> NCBI E-utilities API for JavaScript
 
-This package is a convenience wrapper for **NCBI's E-utilities API** documented at http://www.ncbi.nlm.nih.gov/books/NBK25500/. It uses  es6 promises to support the "pipe" like feature among eutils, e.g. connecting `esearch, elink, or esummary` together. 
+This package is a JavaScript wrapper for **NCBI's E-utilities API** documented at http://www.ncbi.nlm.nih.gov/books/NBK25500/. It uses  ES6 promises to support "piping" to combine successive E-utility calls, e.g. piping `esearch` results to `elink`, then piping its result to `esummary`. This can be used in node (CommonJS) or the browser.
 
 ### Usage
 Access a single eutil:
@@ -11,18 +10,27 @@ Access a single eutil:
     .then(function(d){console.log(d)})
 ```
 
-Basic pipelines: `esearch` -> `esummay`
+Basic data pipelines: `esearch` -> `esummay`
 ```javascript
   eutils.esearch({db:'gene', term: 'ltf[sym] AND human[orgn]'})
     .then(eutils.esummary)
     .then(function(d){console.log(d)})
+    .catch(function(e){ //if error})
 ```
 
-Linking pipelines: `elink` -> `efetch` 
+More complex data pipelines: `esearch` -> `elink` -> `esummary` 
 ```javascript
-  eutils.elink({dbfrom: 'protein', db:'gene', id : ['15718680','157427902']})
-    .then(eutils.fetch)
-    .then(function(d) {console.log(d)});
+  eutils.esearch({db: 'protein', term: '15718680[UID]'})
+    .then(function (d) {
+      d.dbto = 'gene';
+      return eutils.elink(d);
+    })
+    .then(function(d) {
+        //configure additional esummary options here
+        d.retstart = 10;
+        return eutils.esummary(d);
+    })
+    .then(function (d) {console.log(d)})
 ```
 
 
@@ -30,13 +38,21 @@ Linking pipelines: `elink` -> `efetch`
 ```javascript
 npm install --save ncbi-eutils
 ```
-or
+or in a browser
 ```html
 <script src="ncbi-eutils.min.js"></script>
+<script>
+      var eutils = require('ncbi-eutils');
+      ...
+</script>
 ```
 
 ### API
-** under development. 
+
+All calls in this package return a promise object. To get the return values, pass a function to .then() or .catch to get the results and errors, respectively. Alternatively, pass another eutil function to .then() to create pipelines.
+
+#### eutils.einfo([db])
+If **db** is specified, return all metadata for that database. Otherwise return a list of all available NCBI databases.
 
 ### Dev Agenda
 - [ ] Fix up efetch to support more user options
