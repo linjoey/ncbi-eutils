@@ -47,12 +47,44 @@ or in a browser
 </script>
 ```
 
-### API
+## API
 
-All calls in this package return a promise object. To get the return values, pass a function to .then() or .catch to get the results and errors, respectively. Alternatively, pass another eutil function to .then() to create pipelines.
+All calls in this package return a promise object. To get the return values, pass a function to .then() or .catch to get the results and errors, respectively. Alternatively, pass another eutil function to .then() to create a data pipeline. For detailed descriptions of each E-utility, please visit NCBI's documentations.
 
-#### eutils.einfo([db])
-If **db** is specified, return all metadata for that database. Otherwise return a list of all available NCBI databases.
+### eutils.einfo([db])
+If **db** is specified, return all metadata for that database. Otherwise, return the list of all available NCBI databases.
+
+### eutils.esearch(options)
+> Provides a list of UIDs matching a text query
+
+**options.db** a valid NCBI database name
+
+**options.term** a valid search term
+
+### eutils.esummary(options)
+> Returns document summaries (DocSums) for a list of input UIDs
+
+**options.db** a valid NCBI database name
+
+**options.id** array of ids to pass to esummary e.g ['12345', '67890']. Only required if called as the start of a pipeline.
+
+### eutils.efetch(options)
+> Returns formatted data records for a list of input UIDs
+
+**options.db** a valid NCBI database name
+
+**options.id** array of ids to pass to efetch e.g ['12345', '67890']. Only required if called as the start of a pipeline.
+
+### eutils.elink(options)
+> Returns UIDs linked to an input set of UIDs in either the same or a different Entrez database
+
+**options.dbto** a valid NCBI database name
+
+**options.dbfrom** a valid NCBI database name. Only required if called as the start of a pipeline.
+
+**options.id** array of ids to pass to esummary e.g ['12345', '67890']. Only required if called as the start of a pipeline.
+
+
 
 ### Dev Agenda
 - [ ] Fix up efetch to support more user options
@@ -62,8 +94,8 @@ If **db** is specified, return all metadata for that database. Otherwise return 
 - [ ] write test test test
 - [ ] elink-> results dont have auto history server, relinking to other eutils use manual id passing. Implement epost to support large tasks
 
-### License
-MIT
-
 ### NCBI Copyright & Disclaimers
 Please visit http://www.ncbi.nlm.nih.gov/About/disclaimer.html for NCBI's copyright notice.
+
+## License
+MIT
