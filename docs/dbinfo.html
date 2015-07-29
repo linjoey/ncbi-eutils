@@ -24,6 +24,7 @@
       </p>
     </div>
   </div>
+
   <div class="row">
     <div class="col-md-12">
       <div id='db-select' class="dropdown">
@@ -39,24 +40,71 @@
 
   <div class="row top-buffer">
     <div class="col-md-2">
-      <h3>dbinfo</h3>
+      <h3 id="db-name" class="text-center"></h3>
     </div>
     <div class="col-md-10">
       <div>
         <dl>
           <dt>Description:</dt>
-          <dd>Gene Database</dd>
+          <dd id="db-desc"></dd>
 
           <dt>Last update:</dt>
-          <dd>"2015/07/28 07:07"</dd>
+          <dd id="db-lastupdate"></dd>
 
           <dt>dbbuild</dt>
-          <dd>Build150727-2335m.1</dd>
+          <dd id="db-build"></dd>
         </dl>
       </div>
     </div>
   </div>
+  <div class="row">
+    <div class="col-md-12">
+      <table class="table table-bordered table-hover">
+        <caption>Link List</caption>
+        <thead>
+          <tr>
+            <th>name</th>
+            <th>menu</th>
+            <th>description</th>
+            <th>dbto</th>
+          </tr>
+        </thead>
+        <tbody id="link-list-table">
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <table class="table table-bordered table-hover">
+        <caption>Field List</caption>
+        <thead>
+        <tr>
+          <th>name</th>
+          <th>fullname</th>
+          <th>description</th>
+          <th>term count</th>
+          <th>isdate</th>
+          <th>isnumerical</th>
+          <th>single token</th>
+          <th>hierarchy
+          <th>ishidden</th>
+          <th>istruncatable</th>
+          <th>israngeable</th>
+        </tr>
+        </thead>
+        <tbody id="field-list-table">
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
+<footer class="footer">
+  <div class="container">
+    <p class="text-muted">Copyright 2015 Joe Lin</p>
+  </div>
+</footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
@@ -68,7 +116,46 @@ $(function(){
   var dbSelect = $('#db-select').hide();
 
   window.fetchdb = function (db) {
-    console.log('f', db);
+    $('#db-name').html(db);
+    eutils.einfo(db).then(function(res) {
+      console.log('res',res)
+      $('#db-desc').html(res.einforesult.dbinfo.description);
+      $('#db-lastupdate').html(res.einforesult.dbinfo.lastupdate);
+      $('#db-build').html(res.einforesult.dbinfo.dbbuild);
+
+      var fieldlist = res.einforesult.dbinfo.fieldlist;
+      var fieldListTable = $('#field-list-table').html('');;
+
+      for (var i = 0; i < fieldlist.length; ++i) {
+        var row = '<tr>' +
+          '<td>' + fieldlist[i]['name'] +'</td>' +
+          '<td>' + fieldlist[i].fullname+'</td>' +
+          '<td>' + fieldlist[i]['description'] +'</td>' +
+          '<td>' + fieldlist[i].termcount +'</td>' +
+          '<td>' + fieldlist[i].isdate +'</td>' +
+          '<td>' + fieldlist[i].isnumerical +'</td>' +
+          '<td>' + fieldlist[i].singletoken +'</td>' +
+          '<td>' + fieldlist[i].hierarchy +'</td>' +
+          '<td>' + fieldlist[i].ishidden +'</td>' +
+          '<td>' + fieldlist[i].istruncatable +'</td>' +
+          '<td>' + fieldlist[i].israngable +'</td>' + '</tr>';
+
+        fieldListTable.append(row);
+      }
+
+      var linkListTable = $('#link-list-table').html('');
+      var linklist = res.einforesult.dbinfo.linklist;
+
+      for (var i = 0; i < linklist.length; ++i) {
+        var linkrow = '<tr>' +
+          '<td>' + linklist[i]['name'] +'</td>' +
+          '<td>' + linklist[i]['menu']+'</td>' +
+          '<td>' + linklist[i]['description'] +'</td>' +
+          '<td>' + linklist[i]['dbto'] +'</td>' + '</tr>';
+
+        linkListTable.append(linkrow);
+      }
+    });
   };
 
   eutils.einfo().then(function(data) {
