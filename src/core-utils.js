@@ -61,6 +61,19 @@ exports.esearch = function esearch(userOptions) {
   });
 };
 
+function makeRequest(requestURL) {
+  return request(requestURL).then(function(res) {
+    return new Promise(function(resolve, reject) {
+      xml2js(res, {explicitArray:false}, function(err, result) {
+        if (!err) {
+          resolve(result);
+        } else {
+          reject(err);
+        }
+      });
+    });
+  });
+}
 exports.esummary = function summary(options) {
   ensureOptionIsSet(options, ['db'], 'esummary');
 
@@ -72,17 +85,7 @@ exports.esummary = function summary(options) {
     requestURL += '&webenv=' + options.esearchresult.webenv;
   }
 
-  return request(requestURL).then(function(res) {
-    return new Promise(function(resolve, reject) {
-      xml2js(res, function(err, result) {
-        if (!err) {
-          resolve(result);
-        } else {
-          reject(err);
-        }
-      });
-    });
-  });
+  return makeRequest(requestURL);
 };
 
 function getWebenvKeysForURL(options) {
@@ -103,17 +106,7 @@ exports.efetch = function efetch(options) {
   requestURL += buildQueryParameters(options, ['retmode', 'esearchresult', 'header']);
   requestURL += getWebenvKeysForURL(options);
 
-  return request(requestURL).then(function(res) {
-    return new Promise(function(resolve, reject) {
-      xml2js(res, function(err, result) {
-        if (!err) {
-          resolve(result);
-        } else {
-          reject(err);
-        }
-      });
-    });
-  });
+  return makeRequest(requestURL);
 };
 
 exports.elink = function(userOptions) {

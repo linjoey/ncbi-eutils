@@ -14501,7 +14501,7 @@ module.exports = property;
 },{"../internal/baseProperty":93,"../internal/basePropertyDeep":94,"../internal/isKey":110}],132:[function(require,module,exports){
 module.exports={
   "name": "ncbi-eutils",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "NCBI E-utilities API for JavaScript (Node + Browser)",
   "main": "src/index.js",
   "scripts": {
@@ -14599,6 +14599,19 @@ exports.esearch = function esearch(userOptions) {
   });
 };
 
+function makeRequest(requestURL) {
+  return request(requestURL).then(function(res) {
+    return new Promise(function(resolve, reject) {
+      xml2js(res, {explicitArray:false}, function(err, result) {
+        if (!err) {
+          resolve(result);
+        } else {
+          reject(err);
+        }
+      });
+    });
+  });
+}
 exports.esummary = function summary(options) {
   ensureOptionIsSet(options, ['db'], 'esummary');
 
@@ -14610,17 +14623,7 @@ exports.esummary = function summary(options) {
     requestURL += '&webenv=' + options.esearchresult.webenv;
   }
 
-  return request(requestURL).then(function(res) {
-    return new Promise(function(resolve, reject) {
-      xml2js(res, function(err, result) {
-        if (!err) {
-          resolve(result);
-        } else {
-          reject(err);
-        }
-      });
-    });
-  });
+  return makeRequest(requestURL);
 };
 
 function getWebenvKeysForURL(options) {
@@ -14641,17 +14644,7 @@ exports.efetch = function efetch(options) {
   requestURL += buildQueryParameters(options, ['retmode', 'esearchresult', 'header']);
   requestURL += getWebenvKeysForURL(options);
 
-  return request(requestURL).then(function(res) {
-    return new Promise(function(resolve, reject) {
-      xml2js(res, function(err, result) {
-        if (!err) {
-          resolve(result);
-        } else {
-          reject(err);
-        }
-      });
-    });
-  });
+  return makeRequest(requestURL);
 };
 
 exports.elink = function(userOptions) {
