@@ -2,6 +2,7 @@
 var request = require('./request.js')
   , Term = require('./term.js')
   , xml2js = require('xml2js').parseString
+  , assign = require('lodash.assign')
   , EUTILS_BASE = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/';
 
 function buildQueryParameters(options, ignoreList) {
@@ -37,8 +38,12 @@ exports.einfo = function einfo(db) {
   });
 };
 
-exports.esearch = function esearch(options) {
-  ensureOptionIsSet(options, ['db', 'term'], 'esearch');
+exports.esearch = function esearch(userOptions) {
+  ensureOptionIsSet(userOptions, ['db', 'term'], 'esearch');
+
+  var options = assign({
+    retmax: 200
+  }, userOptions);
 
   var requestURL = EUTILS_BASE + 'esearch.fcgi?retmode=json&usehistory=y';
   requestURL += buildQueryParameters(options, ['term', 'usehistory', 'retmode']);
@@ -47,6 +52,11 @@ exports.esearch = function esearch(options) {
   return request(requestURL).then(function(res) {
     var jsonRes = JSON.parse(res);
     jsonRes.db = options.db;
+
+    if (jsonRes.esearchresult.count <= options.retmax) {
+      jsonRes.id = jsonRes.esearchresult.idlist;
+    }
+
     return jsonRes;
   });
 };
@@ -54,18 +64,24 @@ exports.esearch = function esearch(options) {
 exports.esummary = function summary(options) {
   ensureOptionIsSet(options, ['db'], 'esummary');
 
-  var requestURL = EUTILS_BASE + 'esummary.fcgi?retmode=json';
-  requestURL += buildQueryParameters(options, ['retmode', 'esearchresult', 'header']);
+  var requestURL = EUTILS_BASE + 'esummary.fcgi?';
+  requestURL += buildQueryParameters(options, ['esearchresult', 'header']);
 
-  if (options.esearchresult !== undefined) {
+  if (options.id === undefined) {
     requestURL += '&query_key=' + options.esearchresult.querykey;
     requestURL += '&webenv=' + options.esearchresult.webenv;
   }
 
   return request(requestURL).then(function(res) {
-    var jsonRes = JSON.parse(res);
-    jsonRes.db = options.db;
-    return jsonRes;
+    return new Promise(function(resolve, reject) {
+      xml2js(res, function(err, result) {
+        if (!err) {
+          resolve(result);
+        } else {
+          reject(err);
+        }
+      });
+    });
   });
 };
 
@@ -102,7 +118,7 @@ exports.efetch = function efetch(options) {
 
 exports.elink = function elink(options) {
 
-  if (options.header.type === 'esearch' || options.header.type === 'elink') {
+  if (options.header && (options.header.type === 'esearch' || options.header.type === 'elink')) {
     options.dbfrom = options.db;
   }
 
