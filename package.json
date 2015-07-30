@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "es6-promise": "^2.3.0",
+    "lodash.assign": "^3.2.0",
     "request": "^2.60.0",
     "xml2js": "^0.4.9"
   }
