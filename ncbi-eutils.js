@@ -14501,7 +14501,7 @@ module.exports = property;
 },{"../internal/baseProperty":93,"../internal/basePropertyDeep":94,"../internal/isKey":110}],132:[function(require,module,exports){
 module.exports={
   "name": "ncbi-eutils",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "NCBI E-utilities API for JavaScript (Node + Browser)",
   "main": "src/index.js",
   "scripts": {
@@ -14654,26 +14654,30 @@ exports.efetch = function efetch(options) {
   });
 };
 
-exports.elink = function elink(options) {
+exports.elink = function(userOptions) {
 
-  if (options.header && (options.header.type === 'esearch' || options.header.type === 'elink')) {
-    options.dbfrom = options.db;
-  }
+  return function elink(options) {
+    options = assign(options, userOptions);
 
-  options.db = options.dbto;
+    if (options.header && (options.header.type === 'esearch' || options.header.type === 'elink')) {
+      options.dbfrom = options.db;
+    }
 
-  ensureOptionIsSet(options, ['dbfrom','dbto'], 'elink');
+    options.db = options.dbto;
 
-  var requestURL = EUTILS_BASE + 'elink.fcgi?retmode=json';
-  requestURL += buildQueryParameters(options, ['retmode', 'esearchresult', 'header']);
-  requestURL += getWebenvKeysForURL(options);
+    ensureOptionIsSet(options, ['dbfrom','dbto'], 'elink');
 
-  return request(requestURL).then(function(res) {
-    var jsonRes = JSON.parse(res);
-    jsonRes.db = options.db;
-    jsonRes.id = jsonRes.linksets[0].linksetdbs[0].links;
-    return jsonRes;
-  });
+    var requestURL = EUTILS_BASE + 'elink.fcgi?retmode=json';
+    requestURL += buildQueryParameters(options, ['retmode', 'esearchresult', 'header']);
+    requestURL += getWebenvKeysForURL(options);
+
+    return request(requestURL).then(function(res) {
+      var jsonRes = JSON.parse(res);
+      jsonRes.db = options.db;
+      jsonRes.id = jsonRes.linksets[0].linksetdbs[0].links;
+      return jsonRes;
+    });
+  };
 };
 },{"./request.js":134,"./term.js":135,"lodash.assign":41,"xml2js":54}],134:[function(require,module,exports){
 

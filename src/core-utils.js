@@ -116,24 +116,28 @@ exports.efetch = function efetch(options) {
   });
 };
 
-exports.elink = function elink(options) {
+exports.elink = function(userOptions) {
 
-  if (options.header && (options.header.type === 'esearch' || options.header.type === 'elink')) {
-    options.dbfrom = options.db;
-  }
+  return function elink(options) {
+    options = assign(options, userOptions);
 
-  options.db = options.dbto;
+    if (options.header && (options.header.type === 'esearch' || options.header.type === 'elink')) {
+      options.dbfrom = options.db;
+    }
 
-  ensureOptionIsSet(options, ['dbfrom','dbto'], 'elink');
+    options.db = options.dbto;
 
-  var requestURL = EUTILS_BASE + 'elink.fcgi?retmode=json';
-  requestURL += buildQueryParameters(options, ['retmode', 'esearchresult', 'header']);
-  requestURL += getWebenvKeysForURL(options);
+    ensureOptionIsSet(options, ['dbfrom','dbto'], 'elink');
 
-  return request(requestURL).then(function(res) {
-    var jsonRes = JSON.parse(res);
-    jsonRes.db = options.db;
-    jsonRes.id = jsonRes.linksets[0].linksetdbs[0].links;
-    return jsonRes;
-  });
+    var requestURL = EUTILS_BASE + 'elink.fcgi?retmode=json';
+    requestURL += buildQueryParameters(options, ['retmode', 'esearchresult', 'header']);
+    requestURL += getWebenvKeysForURL(options);
+
+    return request(requestURL).then(function(res) {
+      var jsonRes = JSON.parse(res);
+      jsonRes.db = options.db;
+      jsonRes.id = jsonRes.linksets[0].linksetdbs[0].links;
+      return jsonRes;
+    });
+  };
 };
