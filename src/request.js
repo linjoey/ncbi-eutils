@@ -1,5 +1,5 @@
 
-var http = require('http');
+var http = require('https');
 var Promise = require('es6-promise').Promise;
 
 function request(url) {
