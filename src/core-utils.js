@@ -3,7 +3,7 @@ var request = require('./request.js')
   , Term = require('./term.js')
   , xml2js = require('xml2js').parseString
   , assign = require('lodash.assign')
-  , EUTILS_BASE = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/';
+  , EUTILS_BASE = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/';
 
 function buildQueryParameters(options, ignoreList) {
   var query = '';
